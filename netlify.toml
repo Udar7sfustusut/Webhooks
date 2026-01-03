@@ -1,5 +1,6 @@
 [build]
-  functions = "netlify/functions"
+  publish = "public"              # tells Netlify where the site lives
+  functions = "netlify/functions" # tells Netlify where serverless functions are
 
 [[redirects]]
   from = "/api/webhooks/:id/:token"
