@@ -2,19 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Webhook Listener</title>
+  <title>Macro Chat</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background-color: #000000; /* pure black background */
-      color: #fff; /* just to make text visible if needed */
+      background-color: #000000; /* black background */
       font-family: system-ui, sans-serif;
+      color: #dcddde;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 10px 16px;
+      background: #1e1f22;
+      font-weight: bold;
+      font-size: 18px;
+      border-bottom: 1px solid #2f3136;
+    }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column-reverse; /* newest at bottom */
+    }
+
+    .message {
+      background: #1e1f22;
+      border-left: 4px solid #f1c40f;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+      word-wrap: break-word;
+    }
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    pre {
+      background: #111214;
+      padding: 8px;
+      border-radius: 4px;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
-  <!-- This page does nothing. Webhook embeds are unaffected. -->
+  <header>🍯 Macro Chat</header>
+  <div id="chat"></div>
+
+  <script>
+    async function loadMessages() {
+      try {
+        const res = await fetch("/.netlify/functions/get-logs"); // optional function for logs
+        const data = await res.json(); // expects array of embeds
+        const chat = document.getElementById("chat");
+        chat.innerHTML = "";
+
+        data.forEach(entry => {
+          entry.embeds.forEach(embed => {
+            const div = document.createElement("div");
+            div.className = "message";
+            div.innerHTML = `
+              <div class="title">${embed.title || "Update"}</div>
+              <div>${embed.description || ""}</div>
+            `;
+            chat.appendChild(div);
+          });
+        });
+      } catch(e) {
+        console.log("No logs yet or function missing", e);
+      }
+    }
+
+    setInterval(loadMessages, 2000);
+    loadMessages();
+  </script>
 </body>
 </html>
