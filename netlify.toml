@@ -1,0 +1,8 @@
+[build]
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/webhooks/:id/:token"
+  to = "/.netlify/functions/webhook?token=:token"
+  status = 200
+  
