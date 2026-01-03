@@ -1,27 +1,11 @@
 export async function handler(event) {
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405 };
-  }
+  if (event.httpMethod !== "POST") return { statusCode: 405 };
 
-  // Optional simple auth (Discord-style token)
   const { token } = event.queryStringParameters || {};
-  if (token !== "your-secret-token") {
-    return { statusCode: 403, body: "Invalid webhook" };
-  }
+  if (token !== "YOUR_SECRET_TOKEN") return { statusCode: 403 };
 
-  // Parse but DO NOT modify
-  let payload;
-  try {
-    payload = JSON.parse(event.body);
-  } catch {
-    return { statusCode: 400, body: "Invalid JSON" };
-  }
+  // Accept payload, do not modify
+  try { JSON.parse(event.body); } catch { return { statusCode: 400 }; }
 
-  // Optional: log for debugging
-  console.log("Webhook received:", payload);
-
-  // Discord webhooks return 204
-  return {
-    statusCode: 204
-  };
+  return { statusCode: 204 };
 }
